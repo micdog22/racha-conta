@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Racha Conta — divida a conta do bar sem confusão</title>
+  <meta name="description" content="Divida a conta do bar com os 10% do garçom, couvert e itens por pessoa, com os centavos batendo certinho. Copie o resumo e mande no grupo.">
+  <meta name="theme-color" content="#c2410c">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍻</text></svg>">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>Racha Conta</h1>
+    <p class="lead">Divida a conta do bar sem confusão: com os 10% do garçom, o couvert e os centavos batendo certinho.</p>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="titulo-conta">
+      <h2 id="titulo-conta" class="sr-only">Dados da conta</h2>
+      <fieldset class="modos">
+        <legend class="sr-only">Como dividir</legend>
+        <label class="modo"><input type="radio" name="modo" value="quick" checked> <span>Rápido <small>todo mundo paga igual</small></span></label>
+        <label class="modo"><input type="radio" name="modo" value="detailed"> <span>Detalhado <small>cada um paga o que consumiu</small></span></label>
+      </fieldset>
+
+      <div class="grid">
+        <div>
+          <label for="titulo">Nome da conta</label>
+          <input id="titulo" data-bind="title" maxlength="60" autocomplete="off">
+        </div>
+        <div>
+          <span class="rotulo" id="rotulo-servico">Serviço</span>
+          <div class="servico" role="group" aria-labelledby="rotulo-servico">
+            <label class="check"><input type="checkbox" id="servico-on" data-bind="serviceOn"> 10% do garçom</label>
+            <div class="sufixo">
+              <label for="servico-pct" class="sr-only">Porcentagem do serviço</label>
+              <input id="servico-pct" data-bind="servicePercent" inputmode="decimal" autocomplete="off">
+              <span aria-hidden="true">%</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="couvert">Couvert artístico por pessoa (R$)</label>
+          <input id="couvert" data-bind="cover" inputmode="decimal" placeholder="0,00" autocomplete="off">
+        </div>
+        <div>
+          <label for="arredondar">Arredondar cada parte para cima</label>
+          <select id="arredondar" data-bind="roundTo">
+            <option value="0">Não arredondar</option>
+            <option value="100">Para o próximo R$ 1</option>
+            <option value="500">Para o próximo R$ 5</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">O serviço é calculado só sobre o consumo (não sobre o couvert) e é opcional: pague se quiser. O que sobrar no arredondamento vira gorjeta extra.</p>
+    </section>
+
+    <section class="card" id="painel-quick" aria-labelledby="titulo-rapido">
+      <h2 id="titulo-rapido">Conta rápida</h2>
+      <div class="grid">
+        <div>
+          <label for="total">Total consumido, sem os 10% (R$)</label>
+          <input id="total" data-bind="quick.total" inputmode="decimal" placeholder="ex.: 245,30" autocomplete="off">
+        </div>
+        <div>
+          <label for="pessoas">Quantas pessoas</label>
+          <div class="stepper">
+            <button type="button" class="btn secondary" data-step="-1" aria-label="Uma pessoa a menos">−</button>
+            <input id="pessoas" data-bind="quick.people" inputmode="numeric" autocomplete="off">
+            <button type="button" class="btn secondary" data-step="1" aria-label="Uma pessoa a mais">+</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="painel-detailed" aria-labelledby="titulo-pessoas" hidden>
+      <h2 id="titulo-pessoas">Quem está na mesa</h2>
+      <ul class="pessoas" id="lista-pessoas"></ul>
+      <form class="adicionar" id="form-pessoa">
+        <label for="nova-pessoa" class="sr-only">Nome da nova pessoa</label>
+        <input id="nova-pessoa" placeholder="Nome (ex.: Ana)" maxlength="40" autocomplete="off">
+        <button class="btn secondary" type="submit">Adicionar pessoa</button>
+      </form>
+
+      <h2 class="separado">O que foi pedido</h2>
+      <p class="hint">Desmarque quem não consumiu o item. Por exemplo: a cerveja só para quem bebeu.</p>
+      <div id="lista-itens"></div>
+      <p class="acoes">
+        <button type="button" class="btn secondary" id="add-item">Adicionar item</button>
+        <button type="button" class="link" id="exemplo">Carregar um exemplo</button>
+      </p>
+
+      <h2 class="separado">Desconto (opcional)</h2>
+      <div class="grid">
+        <div>
+          <label for="desconto">Desconto sobre o consumo</label>
+          <input id="desconto" data-bind="discount" inputmode="decimal" placeholder="0" autocomplete="off">
+        </div>
+        <div>
+          <label for="desconto-tipo">Tipo de desconto</label>
+          <select id="desconto-tipo" data-bind="discountType">
+            <option value="value">Em reais (R$)</option>
+            <option value="percent">Em porcentagem (%)</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">O desconto é dividido na proporção do consumo de cada um, e o serviço é calculado depois do desconto.</p>
+    </section>
+
+    <section class="card" id="resultado" aria-live="polite" aria-labelledby="titulo-resultado">
+      <h2 id="titulo-resultado">Quanto cada um paga</h2>
+      <div id="resultado-conteudo"></div>
+    </section>
+
+    <section class="card" aria-labelledby="titulo-resumo">
+      <h2 id="titulo-resumo">Mandar no grupo</h2>
+      <div class="grid">
+        <div>
+          <label for="pix-chave">Chave Pix de quem pagou a conta (opcional)</label>
+          <input id="pix-chave" data-bind="pixKey" maxlength="80" autocomplete="off" placeholder="ex.: maria@example.com">
+        </div>
+        <div>
+          <label for="pix-nome">Nome no Pix (opcional)</label>
+          <input id="pix-nome" data-bind="pixName" maxlength="60" autocomplete="off" placeholder="ex.: Maria Exemplo">
+        </div>
+      </div>
+      <pre class="resumo" id="resumo" aria-label="Prévia do resumo"></pre>
+      <p class="acoes">
+        <button type="button" class="btn" id="copiar">Copiar resumo</button>
+        <button type="button" class="btn secondary" id="compartilhar" hidden>Compartilhar</button>
+        <span id="aviso-copia" class="status" role="status"></span>
+      </p>
+    </section>
+
+    <p class="acoes fim">
+      <button type="button" class="btn secondary" id="nova">Nova conta</button>
+      <span class="muted">A conta atual fica salva neste navegador até você começar uma nova.</span>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Tudo roda no seu navegador. Código aberto no <a href="https://github.com/micdog22/racha-conta">GitHub</a> · Licença MIT</p>
+  </footer>
+</body>
+</html>
