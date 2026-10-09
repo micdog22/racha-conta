@@ -50,7 +50,7 @@ test('formata valores em reais', () => {
   assert.equal(formatBRL(7), 'R$ 0,07');
   assert.equal(formatBRL(123456), 'R$ 1.234,56');
   assert.equal(formatBRL(100000000), 'R$ 1.000.000,00');
-  assert.equal(formatBRL(-500), '−R$ 5,00');
+  assert.equal(formatBRL(-500), '-R$ 5,00');
 });
 
 test('porcentagens', () => {
@@ -221,14 +221,14 @@ test('resumo para o WhatsApp', () => {
   const r = detailed({ cover: '20' });
   const text = summaryText(r, { title: 'Aniversário da Maria Exemplo', pixKey: 'maria@example.com', pixName: 'Maria Exemplo' });
   const lines = text.split('\n');
-  assert.equal(lines[0], `*Aniversário da Maria Exemplo* — total ${formatBRL(r.totals.total)}`);
+  assert.equal(lines[0], `*Aniversário da Maria Exemplo*: total ${formatBRL(r.totals.total)}`);
   assert.equal(lines[1], `• Ana: ${formatBRL(byName(r).Ana.total)}`);
   assert.ok(lines.includes('_serviço de 10% incluído · couvert de R$ 20,00 por pessoa_'));
   assert.equal(lines.at(-1), 'Pix: maria@example.com (Maria Exemplo)');
 
   const quick = quickSplit({ total: '245,30', people: '4', serviceOn: true, servicePercent: '10', roundTo: 0 });
   assert.equal(summaryText(quick), [
-    '*Conta do Bar* — total R$ 269,83',
+    '*Conta do Bar*: total R$ 269,83',
     '• 3 pessoas: R$ 67,46 cada',
     '• 1 pessoa: R$ 67,45',
     '_serviço de 10% incluído_',

@@ -31,7 +31,7 @@ export function parseBRL(text) {
 export function formatBRL(cents) {
   const abs = Math.abs(cents);
   const reais = String(Math.floor(abs / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  return `${cents < 0 ? '−' : ''}R$ ${reais},${String(abs % 100).padStart(2, '0')}`;
+  return `${cents < 0 ? '-' : ''}R$ ${reais},${String(abs % 100).padStart(2, '0')}`;
 }
 
 /** Converte porcentagem ("10", "12,5") em centésimos de ponto percentual (10% → 1000). Inválido → NaN. */
@@ -233,7 +233,7 @@ export function formatPercent(basisPoints) {
 
 /** Texto pronto para colar no WhatsApp (negrito com *asteriscos*). */
 export function summaryText(result, { title = '', pixKey = '', pixName = '' } = {}) {
-  const lines = [`*${title.trim() || 'Conta do Bar'}* — total ${formatBRL(result.totals.total)}`];
+  const lines = [`*${title.trim() || 'Conta do Bar'}*: total ${formatBRL(result.totals.total)}`];
   if (result.mode === 'quick') {
     const groups = new Map();
     for (const p of result.people) groups.set(p.total, (groups.get(p.total) ?? 0) + 1);

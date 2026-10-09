@@ -1,4 +1,4 @@
-# Racha Conta — divida a conta do bar sem confusão (HTML + JS)
+# Racha Conta: divida a conta do bar sem confusão (HTML + JS)
 
 Calculadora para dividir a conta do bar ou do restaurante entre amigos: com os 10% do garçom, o couvert artístico, itens que só alguns consumiram e os centavos batendo certinho com o total. No fim, é só copiar o resumo e mandar no grupo do WhatsApp.
 
@@ -23,7 +23,7 @@ Calculadora para dividir a conta do bar ou do restaurante entre amigos: com os 1
 Exemplo de resumo copiado:
 
 ```
-*Happy hour da firma* — total R$ 179,00
+*Happy hour da firma*: total R$ 179,00
 • Ana: R$ 63,00
 • Bruno: R$ 63,00
 • Carla: R$ 53,00
@@ -60,4 +60,4 @@ O serviço de 10% é opcional: a calculadora só ajuda a fazer a conta.
 Issues e pull requests são bem-vindos.
 
 ## Licença
-MIT — veja [LICENSE](LICENSE).
+MIT. Veja [LICENSE](LICENSE).
